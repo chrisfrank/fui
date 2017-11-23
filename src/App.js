@@ -1,40 +1,35 @@
 import React from 'react';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
-import Panel from './Panel';
+import styled from 'styled-components';
+import Ipsum from './Ipsum';
 
-const App = () => (
-  <Router>
+import { PanelLayout, Panel } from './fui-panels';
+
+const Example = ({ match, referrer }) => {
+  const baseURL = match.url === "/" ? "" : match.url;
+  return (
     <div>
+      <Panel>
+        <h1>I am a panel.</h1>
+        {referrer && <Link to={referrer}>prev</Link>}
+        <Link to={`${baseURL}/next`}>next</Link>
+        <Ipsum />
+      </Panel>
       <Route
-        path="/"
+        path={`${baseURL}/next`}
         render={r => (
-          <Panel id={r.match.url}>
-            <h1>Hello</h1>
-            <Link to="/world">Next</Link>
-            <Link to="/world/etc">Last</Link>
-          </Panel>
-        )}
-      />
-      <Route
-        path="/world"
-        render={r => (
-          <Panel id={r.match.url}>
-            <Link to="/">prev</Link>
-            <h1>World</h1>
-            <Link to="/world/etc">Next</Link>
-          </Panel>
-        )}
-      />
-      <Route
-        path="/world/etc"
-        render={r => (
-          <Panel id={r.match.url}>
-            <Link to="/world">prev</Link>
-            <h1>Etc</h1>
-          </Panel>
+          <Example {...r} referrer={match.url} />
         )}
       />
     </div>
+  );
+};
+
+const App = () => (
+  <Router>
+    <PanelLayout>
+      <Example match={{ url: '/' }} />
+    </PanelLayout>
   </Router>
 );
 
