@@ -38,14 +38,17 @@ class Layout extends Component {
 
   getChildContext() {
     const { panels } = this.state;
-    const scalers = [...Array(panels.length)].map((x, i) =>
+    const displayed = panels.slice(-this.props.max);
+    const offscreen = panels[panels.length - this.props.max - 1];
+    const scalers = [...Array(displayed.length)].map((x, i) =>
       Math.pow(this.props.scale, i)
     );
     const baseWidth = 100 / (sumArray(scalers) || 1);
     return {
       panels: {
         baseWidth,
-        displayed: panels.slice(-this.props.max),
+        displayed,
+        offscreen,
         onMount: this.handlePanelMount,
         onUnmount: this.handlePanelUnmount,
         scale: this.props.scale,
@@ -60,7 +63,7 @@ class Layout extends Component {
 }
 
 Layout.defaultProps = {
-  max: 2,
+  max: 3,
   scale: 1.5
 };
 
@@ -68,6 +71,7 @@ Layout.childContextTypes = {
   panels: PropTypes.shape({
     baseWidth: PropTypes.number.isRequired,
     displayed: PropTypes.array.isRequired,
+    offscreen: PropTypes.any,
     onMount: PropTypes.func.isRequired,
     onUnmount: PropTypes.func.isRequired,
     scale: PropTypes.number.isRequired,

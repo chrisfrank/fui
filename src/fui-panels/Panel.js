@@ -20,7 +20,6 @@ const Scroll = styled.div`
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
   transition: all 0.3s;
-  padding: 1em;
   flex: 1;
 `;
 
@@ -51,7 +50,9 @@ class Panel extends Component {
   }
 
   render() {
-    const { baseWidth, displayed, scale, scalers } = this.props;
+    const { baseWidth, displayed, offscreen, scale, scalers } = this.props;
+    if (offscreen === this) return this.renderOffscreen();
+
     const index = displayed.indexOf(this);
     if (index === -1) return null;
 
@@ -69,25 +70,33 @@ class Panel extends Component {
       </Element>
     );
   }
+
+  renderOffscreen() {
+    return (
+      <Element
+        className="panel"
+        offset={-this.props.baseWidth}
+        width={this.props.baseWidth}
+        brightness={1 - this.props.displayed.length * 0.03}
+      >
+        {this.props.children}
+      </Element>
+    )
+  }
 }
 
-const consumePanelContext = (contextTypes) => Component => {
-  const Consumer = (props, context) => (
-    <Component {...props} {...context.panels} />
-  );
-  Consumer.contextTypes = contextTypes;
-  return Consumer;
-};
+const ContextPanel = (props, context) => <Panel {...props} {...context.panels} />;
 
-const PanelWithContext = consumePanelContext({
+ContextPanel.contextTypes = {
   panels: PropTypes.shape({
     baseWidth: PropTypes.number.isRequired,
     displayed: PropTypes.array.isRequired,
+    offscreen: PropTypes.any,
     onMount: PropTypes.func.isRequired,
     onUnmount: PropTypes.func.isRequired,
     scale: PropTypes.number.isRequired,
     scalers: PropTypes.array.isRequired,
   })
-})(Panel);
+};
 
-export default PanelWithContext;
+export default ContextPanel;

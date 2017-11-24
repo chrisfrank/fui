@@ -10,10 +10,12 @@ const Example = ({ match, referrer }) => {
   return (
     <div>
       <Panel>
-        <h1>I am a panel.</h1>
-        {referrer && <Link to={referrer}>prev</Link>}
-        <Link to={`${baseURL}/next`}>next</Link>
-        <Ipsum />
+        <div style={{ padding: '1em' }}>
+          <h1>I am a panel.</h1>
+          {referrer && <Link to={referrer}>prev</Link>}
+          <Link to={`${baseURL}/next`}>next</Link>
+          <Ipsum />
+        </div>
       </Panel>
       <Route
         path={`${baseURL}/next`}
