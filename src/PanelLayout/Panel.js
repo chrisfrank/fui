@@ -36,7 +36,7 @@ const Element = styled.div`
   width: ${props => props.width}%;
   left: ${props => props.offset}%;
   filter: brightness(${props => props.brightness});
-  animation: ${entrance} 0.5s;
+  animation: ${props => props.animate ? `${entrance} 0.5s` : 'none'};
 `;
 
 class Panel extends Component {
@@ -51,52 +51,48 @@ class Panel extends Component {
 
   render() {
     const { baseWidth, displayed, offscreen, scale, scalers } = this.props;
-    if (offscreen === this) return this.renderOffscreen();
+    if (offscreen === this) return this.renderElement({
+      brightness: 1 - displayed.length * 0.03,
+      offset: -baseWidth,
+      width: baseWidth,
+    });
 
     const index = displayed.indexOf(this);
     if (index === -1) return null;
 
     const width = baseWidth * Math.pow(scale, index);
-    const offset = index == 0 ? 0 : baseWidth * sumArray(scalers.slice(0, index));
+    const offset = index === 0 ? 0 : baseWidth * sumArray(scalers.slice(0, index));
+    const brightness = 1 - (scalers.length - index - 1) * 0.03;
 
+    return this.renderElement({ brightness, index, offset, width });
+  }
+
+  renderElement({ brightness, index, offset, width }) {
+    const { children, render } = this.props;
     return (
       <Element
         className="panel"
         offset={offset}
         width={width}
-        brightness={1 - (scalers.length - index - 1) * 0.03}
+        brightness={brightness}
+        animate={index > 0}
       >
-        <Scroll>{this.props.children}</Scroll>
+        <Scroll>
+          {render ? render(width / 100 * window.innerWidth) : children}
+        </Scroll>
       </Element>
     );
   }
-
-  renderOffscreen() {
-    return (
-      <Element
-        className="panel"
-        offset={-this.props.baseWidth}
-        width={this.props.baseWidth}
-        brightness={1 - this.props.displayed.length * 0.03}
-      >
-        {this.props.children}
-      </Element>
-    )
-  }
 }
 
-const ContextPanel = (props, context) => <Panel {...props} {...context.panels} />;
-
-ContextPanel.contextTypes = {
-  panels: PropTypes.shape({
-    baseWidth: PropTypes.number.isRequired,
-    displayed: PropTypes.array.isRequired,
-    offscreen: PropTypes.any,
-    onMount: PropTypes.func.isRequired,
-    onUnmount: PropTypes.func.isRequired,
-    scale: PropTypes.number.isRequired,
-    scalers: PropTypes.array.isRequired,
-  })
+Panel.propTypes = {
+  baseWidth: PropTypes.number.isRequired,
+  displayed: PropTypes.array.isRequired,
+  offscreen: PropTypes.any,
+  onMount: PropTypes.func.isRequired,
+  onUnmount: PropTypes.func.isRequired,
+  scale: PropTypes.number.isRequired,
+  scalers: PropTypes.array.isRequired,
 };
 
-export default ContextPanel;
+export default Panel;
