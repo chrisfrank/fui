@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { default as styled, keyframes } from 'styled-components';
-
-const colors = ['#faa', '#aff', '#faf'];
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { default as styled, keyframes } from "styled-components";
+import { sumArray } from './Layout';
 
 const entrance = keyframes`
   0% {
@@ -13,14 +12,14 @@ const entrance = keyframes`
     transform: translate3d(0,0,0);
     opacity: 1;
   }
-`
+`;
 
 const Scroll = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
-  transition: all .3s;
+  transition: all 0.3s;
   padding: 1em;
   flex: 1;
 `;
@@ -34,47 +33,37 @@ const Element = styled.div`
   overflow: hidden;
   background-color: white;
   transition-property: filter, transform, left, width;
-  transition-duration: .5s;
+  transition-duration: 0.5s;
   width: ${props => props.width}%;
   left: ${props => props.offset}%;
   filter: brightness(${props => props.brightness});
-  animation: ${entrance} .5s;
-`
-
-const sum = array => array.reduce((a, b) => (a + b), 0);
+  animation: ${entrance} 0.5s;
+`;
 
 class Panel extends Component {
   constructor(props, context) {
-    super(props, context);
-    context.panels.onMount(this);
+    super(props);
+    this.props.onMount(this);
   }
 
   componentWillUnmount() {
-    const { panels } = this.context;
-    panels.onUnmount(this);
+    this.props.onUnmount(this);
   }
 
   render() {
-    const  { panels } = this.context;
-    const index = panels.list.indexOf(this);
+    const { baseWidth, displayed, scale, scalers } = this.props;
+    const index = displayed.indexOf(this);
     if (index === -1) return null;
 
-    const scale = [...Array(panels.list.length)].map((x, i) => (
-      Math.pow(panels.scale, i)
-    ));
-
-    const baseWidth = 100 / (sum(scale) || 1);
-    const width = baseWidth * Math.pow(panels.scale, index);
-    const offset = index == 0 ? 0 : (
-      baseWidth * sum(scale.slice(0, index))
-    );
+    const width = baseWidth * Math.pow(scale, index);
+    const offset = index == 0 ? 0 : baseWidth * sumArray(scalers.slice(0, index));
 
     return (
       <Element
         className="panel"
         offset={offset}
         width={width}
-        brightness={1 - (scale.length - index - 1)*.03}
+        brightness={1 - (scalers.length - index - 1) * 0.03}
       >
         <Scroll>{this.props.children}</Scroll>
       </Element>
@@ -82,13 +71,23 @@ class Panel extends Component {
   }
 }
 
-Panel.contextTypes = {
+const consumePanelContext = (contextTypes) => Component => {
+  const Consumer = (props, context) => (
+    <Component {...props} {...context.panels} />
+  );
+  Consumer.contextTypes = contextTypes;
+  return Consumer;
+};
+
+const PanelWithContext = consumePanelContext({
   panels: PropTypes.shape({
-    list: PropTypes.array.isRequired,
+    baseWidth: PropTypes.number.isRequired,
+    displayed: PropTypes.array.isRequired,
     onMount: PropTypes.func.isRequired,
     onUnmount: PropTypes.func.isRequired,
     scale: PropTypes.number.isRequired,
-  }).isRequired,
-};
+    scalers: PropTypes.array.isRequired,
+  })
+})(Panel);
 
-export default Panel;
+export default PanelWithContext;

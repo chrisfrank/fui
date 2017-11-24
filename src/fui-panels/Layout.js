@@ -1,23 +1,35 @@
-import { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+
+const sumArray = (array = []) => array.reduce((a, b) => (a + b), 0);
+
+const NoOverflow = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+`;
 
 class Layout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      panels: [],
+      panels: []
     };
 
-    this.handlePanelMount = (panel) => {
+    this.handlePanelMount = panel => {
       this.setState(({ panels }) => {
         panels.push(panel);
         return { panels };
       });
     };
 
-    this.handlePanelUnmount = (panel) => {
+    this.handlePanelUnmount = panel => {
       this.setState(({ panels }) => {
-        const index = panels.indexOf(panel)
+        const index = panels.indexOf(panel);
         panels.splice(index, 1);
         return { panels };
       });
@@ -25,30 +37,43 @@ class Layout extends Component {
   }
 
   getChildContext() {
+    const { panels } = this.state;
+    const scalers = [...Array(panels.length)].map((x, i) =>
+      Math.pow(this.props.scale, i)
+    );
+    const baseWidth = 100 / (sumArray(scalers) || 1);
     return {
       panels: {
-        list: this.state.panels.slice(-this.props.max),
+        baseWidth,
+        displayed: panels.slice(-this.props.max),
         onMount: this.handlePanelMount,
         onUnmount: this.handlePanelUnmount,
-        scale: 1.5,
-      },
+        scale: this.props.scale,
+        scalers,
+      }
     };
   }
 
-  render() { return this.props.children }
+  render() {
+    return <NoOverflow>{this.props.children}</NoOverflow>;
+  }
 }
 
 Layout.defaultProps = {
-  max: 3,
+  max: 2,
+  scale: 1.5
 };
 
 Layout.childContextTypes = {
   panels: PropTypes.shape({
-    list: PropTypes.array.isRequired,
+    baseWidth: PropTypes.number.isRequired,
+    displayed: PropTypes.array.isRequired,
     onMount: PropTypes.func.isRequired,
     onUnmount: PropTypes.func.isRequired,
     scale: PropTypes.number.isRequired,
-  }),
+    scalers: PropTypes.array.isRequired,
+  })
 };
 
 export default Layout;
+export { sumArray };

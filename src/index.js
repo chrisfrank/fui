@@ -6,9 +6,6 @@ import reset from 'styled-reset';
 
 injectGlobal`
   ${reset}
-  html, body {
-    overflow: hidden;
-  }
 `
 
 ReactDOM.render(<App />, document.getElementById('root'));
