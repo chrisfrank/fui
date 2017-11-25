@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import styled from "styled-components";
 import Ipsum from "./Ipsum";
 
-import { PanelLayout, Panel } from "./PanelLayout";
+import { PanelLayout, Panel } from "../fui";
 
 const RecursivePanel = ({ baseURL = "", layout, referrer }) => (
   <div>
@@ -13,6 +13,7 @@ const RecursivePanel = ({ baseURL = "", layout, referrer }) => (
         <div style={{ padding: "1em" }}>
           <h1>I am a panel that knows about its width.</h1>
           <p>Width = {width}</p>
+          <p>{baseURL}</p>
           {typeof referrer === "string" && <Link to={referrer}>prev</Link>}
           <Link to={`${baseURL}/next`}>next</Link>
           <Ipsum />
@@ -34,7 +35,7 @@ const RecursivePanel = ({ baseURL = "", layout, referrer }) => (
 
 const App = () => (
   <Router>
-    <PanelLayout max={4}>
+    <PanelLayout max={3}>
       {layout => <RecursivePanel layout={layout} />}
     </PanelLayout>
   </Router>

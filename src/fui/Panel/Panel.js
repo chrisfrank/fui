@@ -5,7 +5,7 @@ import { sumArray } from './Layout';
 
 const entrance = keyframes`
   0% {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(50%, 0, 0);
     opacity: 0;
   }
   100% {
@@ -31,7 +31,7 @@ const Element = styled.div`
   flex-direction: column;
   overflow: hidden;
   background-color: white;
-  transition-property: filter, transform, left, width;
+  transition-property: ${props => props.max > 1 ? 'filter, transform, left, width' : 'none'};
   transition-duration: 0.5s;
   width: ${props => props.width}%;
   left: ${props => props.offset}%;
@@ -43,6 +43,11 @@ class Panel extends Component {
   constructor(props, context) {
     super(props);
     this.props.onMount(this);
+    this.state = { canAnimate: props.max > 1 && props.displayed.length > 0 };
+
+    this.handleAnimationEnd = () => {
+      this.setState({ canAnimate: false });
+    };
   }
 
   componentWillUnmount() {
@@ -50,10 +55,12 @@ class Panel extends Component {
   }
 
   render() {
-    const { baseWidth, displayed, offscreen, scale, scalers } = this.props;
+    const { baseWidth, displayed, max, offscreen, scale, scalers } = this.props;
     if (offscreen === this) return this.renderElement({
+      animate: false,
       brightness: 1 - displayed.length * 0.03,
-      offset: -baseWidth,
+      max,
+      offset: -baseWidth / 2,
       width: baseWidth,
     });
 
@@ -64,18 +71,27 @@ class Panel extends Component {
     const offset = index === 0 ? 0 : baseWidth * sumArray(scalers.slice(0, index));
     const brightness = 1 - (scalers.length - index - 1) * 0.03;
 
-    return this.renderElement({ brightness, index, offset, width });
+    return this.renderElement({
+      animate: this.state.canAnimate,
+      brightness,
+      index,
+      max,
+      offset,
+      width
+    });
   }
 
-  renderElement({ brightness, index, offset, width }) {
+  renderElement({ animate, brightness, index, max, offset, width }) {
     const { children, render } = this.props;
     return (
       <Element
+        onAnimationEnd={this.handleAnimationEnd}
+        animate={animate}
+        brightness={brightness}
         className="panel"
+        max={max}
         offset={offset}
         width={width}
-        brightness={brightness}
-        animate={index > 0}
       >
         <Scroll>
           {render ? render(width / 100 * window.innerWidth) : children}
@@ -88,6 +104,7 @@ class Panel extends Component {
 Panel.propTypes = {
   baseWidth: PropTypes.number.isRequired,
   displayed: PropTypes.array.isRequired,
+  max: PropTypes.number.isRequired,
   offscreen: PropTypes.any,
   onMount: PropTypes.func.isRequired,
   onUnmount: PropTypes.func.isRequired,

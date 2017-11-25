@@ -46,6 +46,7 @@ class Layout extends Component {
     const passedProps = {
       baseWidth,
       displayed,
+      max,
       offscreen,
       onMount: this.handlePanelMount,
       onUnmount: this.handlePanelUnmount,

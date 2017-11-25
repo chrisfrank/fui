@@ -1,22 +1,25 @@
 {
-  "name": "panels",
+  "name": "fui",
   "version": "0.1.0",
   "private": true,
+  "main": "lib/fui/index.js",
   "dependencies": {
     "prop-types": "^15.6.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
-    "react-lorem-component": "^0.12.2",
-    "react-media": "^1.6.1",
-    "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
-    "styled-components": "^2.2.3",
-    "styled-reset": "^0.1.3"
+    "styled-components": "^2.2.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "compile": "NODE_ENV=production babel src --out-dir lib --copy-files",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "react-router-dom": "^4.2.2",
+    "styled-reset": "^0.1.3"
   }
 }
