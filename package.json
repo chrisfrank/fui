@@ -19,7 +19,6 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "react-media": "^1.6.1",
     "react-router-dom": "^4.2.2"
   }
 }
