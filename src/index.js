@@ -2,12 +2,33 @@
 // find fui's index.js at fui/index.js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Example from './Example';
-import { injectGlobal } from 'styled-components'
-import reset from 'styled-reset';
 
-injectGlobal`
-  ${reset}
-`
+import { ReactRouter, Standalone } from './examples';
 
-ReactDOM.render(<Example />, document.getElementById('root'));
+const routes = {
+  "/recursive-via-react-router": ReactRouter,
+  "/recursive-via-component-state": Standalone,
+};
+
+const Index = () => (
+  <div style={{ padding: "1em" }}>
+    <h1>React Panel Tree</h1>
+    <h2>Examples</h2>
+    <ul>
+      {Object.keys(routes).map(route => (
+        <li key={route}>
+          <a href={route}>{route}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+)
+
+const App = () => {
+  const { pathname } = window.location;
+  const match = Object.keys(routes).find(elem => pathname.indexOf(elem) !== -1);
+  const Example = routes[match] || Index;
+  return <Example baseURL={match} />;
+};
+
+ReactDOM.render(<App />, document.getElementById('root'));

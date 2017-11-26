@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { default as styled, keyframes } from "styled-components";
-import { sumArray } from './Layout';
+import { sumArray } from './Tree';
 
 const entrance = keyframes`
   0% {
@@ -55,7 +55,7 @@ class Panel extends Component {
   }
 
   render() {
-    const { baseWidth, displayed, max, offscreen, scale, scalers } = this.props;
+    const { baseWidth, displayed, max, offscreen, ratio, scale } = this.props;
     if (offscreen === this) return this.renderElement({
       animate: false,
       brightness: 1 - displayed.length * 0.03,
@@ -64,12 +64,12 @@ class Panel extends Component {
       width: baseWidth,
     });
 
-    const index = displayed.indexOf(this);
+    const index = displayed.length === 0 ? 0 : displayed.indexOf(this);
     if (index === -1) return null;
 
-    const width = baseWidth * Math.pow(scale, index);
-    const offset = index === 0 ? 0 : baseWidth * sumArray(scalers.slice(0, index));
-    const brightness = 1 - (scalers.length - index - 1) * 0.03;
+    const width = baseWidth * Math.pow(ratio, index);
+    const offset = index === 0 ? 0 : baseWidth * sumArray(scale.slice(0, index));
+    const brightness = 1 - (scale.length - index - 1) * 0.03;
 
     return this.renderElement({
       animate: this.state.canAnimate,
@@ -108,8 +108,8 @@ Panel.propTypes = {
   offscreen: PropTypes.any,
   onMount: PropTypes.func.isRequired,
   onUnmount: PropTypes.func.isRequired,
-  scale: PropTypes.number.isRequired,
-  scalers: PropTypes.array.isRequired,
+  ratio: PropTypes.number.isRequired,
+  scale: PropTypes.array.isRequired,
 };
 
 export default Panel;

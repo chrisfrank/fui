@@ -1,1 +1,1 @@
-export { Panel, PanelLayout } from './Panel';
+export { Panel, PanelTree } from './Panel';

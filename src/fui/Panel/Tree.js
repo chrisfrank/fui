@@ -13,7 +13,7 @@ const NoOverflow = styled.div`
   overflow: hidden;
 `;
 
-class Layout extends Component {
+class Tree extends Component {
   constructor(props) {
     super(props);
     this.state = { panels: [] };
@@ -35,14 +35,14 @@ class Layout extends Component {
   }
 
   render() {
-    const { children, max, render, scale } = this.props;
+    const { children, max, ratio, render } = this.props;
     const { panels } = this.state;
     const displayed = panels.slice(-max);
     const offscreen = panels[panels.length - max - 1];
-    const scalers = [...Array(displayed.length)].map((x, i) =>
-      Math.pow(scale, i)
+    const scale = [...Array(displayed.length)].map((x, i) =>
+      Math.pow(ratio, i)
     );
-    const baseWidth = 100 / (sumArray(scalers) || 1);
+    const baseWidth = 100 / (sumArray(scale) || 1);
     const passedProps = {
       baseWidth,
       displayed,
@@ -50,8 +50,8 @@ class Layout extends Component {
       offscreen,
       onMount: this.handlePanelMount,
       onUnmount: this.handlePanelUnmount,
+      ratio,
       scale,
-      scalers,
     };
     return (
       <NoOverflow>
@@ -61,17 +61,17 @@ class Layout extends Component {
   }
 }
 
-Layout.defaultProps = {
+Tree.defaultProps = {
   children() {},
   max: 3,
+  ratio: 1.5,
   render: null,
-  scale: 1.5
 };
 
-Layout.propTypes = {
+Tree.propTypes = {
   children: PropTypes.func,
   render: PropTypes.func,
 };
 
-export default Layout;
+export default Tree;
 export { sumArray };
