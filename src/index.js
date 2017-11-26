@@ -3,11 +3,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { ReactRouter, Standalone } from './examples';
+import { ReactRouter, Responsive, Standalone } from './examples';
 
 const routes = {
   "/recursive-via-react-router": ReactRouter,
   "/recursive-via-component-state": Standalone,
+  "/responsive": Responsive,
 };
 
 const Index = () => (

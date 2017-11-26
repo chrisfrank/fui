@@ -47,3 +47,4 @@ const RouterExample = ({ baseURL }) => (
 );
 
 export default RouterExample;
+export { RecursiveRoutePanel };
