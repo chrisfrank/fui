@@ -31,11 +31,8 @@ const Element = styled.div`
   flex-direction: column;
   overflow: hidden;
   background-color: white;
-  transition-property: ${props => props.max > 1 ? 'filter, transform, left, width' : 'none'};
+  transition-property: filter, transform, left, width;
   transition-duration: 0.5s;
-  width: ${props => props.width}%;
-  left: ${props => props.offset}%;
-  filter: brightness(${props => props.brightness});
   animation: ${props => props.animate ? `${entrance} 0.5s` : 'none'};
 `;
 
@@ -56,10 +53,9 @@ class Panel extends Component {
 
   render() {
     const { baseWidth, displayed, max, offscreen, ratio, scale } = this.props;
-    if (offscreen === this) return this.renderElement({
+    if (offscreen === this && max > 1) return this.renderElement({
       animate: false,
       brightness: 1 - displayed.length * 0.03,
-      max,
       offset: -baseWidth / 2,
       width: baseWidth,
     });
@@ -74,24 +70,24 @@ class Panel extends Component {
     return this.renderElement({
       animate: this.state.canAnimate,
       brightness,
-      index,
-      max,
       offset,
       width
     });
   }
 
-  renderElement({ animate, brightness, index, max, offset, width }) {
+  renderElement({ animate, brightness, offset, width }) {
     const { children, render } = this.props;
+    const style = {
+      width: `${width}%`,
+      left: `${offset}%`,
+      filter: `brightness(${brightness})`,
+    };
     return (
       <Element
         onAnimationEnd={this.handleAnimationEnd}
         animate={animate}
-        brightness={brightness}
         className="panel"
-        max={max}
-        offset={offset}
-        width={width}
+        style={style}
       >
         <Scroll>
           {render ? render(width / 100 * window.innerWidth) : children}
