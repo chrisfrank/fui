@@ -73,7 +73,6 @@ Tree.defaultProps = {
 Tree.propTypes = {
   children: PropTypes.func,
   max: PropTypes.number,
-  render: PropTypes.func,
   ratio: PropTypes.number,
   render: PropTypes.func,
   transition: PropTypes.number,
