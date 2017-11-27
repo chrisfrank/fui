@@ -32,8 +32,8 @@ const Element = styled.div`
   overflow: hidden;
   background-color: white;
   transition-property: filter, transform, left, width;
-  transition-duration: 0.5s;
-  animation: ${props => props.animate ? `${entrance} 0.5s` : 'none'};
+  transition-duration: 0.333s;
+  animation: ${props => props.animate ? `${entrance} 0.333s` : 'none'};
 `;
 
 class Panel extends Component {
