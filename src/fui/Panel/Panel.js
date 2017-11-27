@@ -1,40 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { default as styled, keyframes } from "styled-components";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { entrance, PanelDiv, ScrollDiv } from './elements';
 import { sumArray } from './Tree';
-
-const entrance = keyframes`
-  0% {
-    transform: translate3d(50%, 0, 0);
-    opacity: 0;
-  }
-  100% {
-    transform: translate3d(0,0,0);
-    opacity: 1;
-  }
-`;
-
-const Scroll = styled.div`
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  box-sizing: border-box;
-  transition: all 0.3s;
-  flex: 1;
-`;
-
-const Element = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background-color: white;
-  transition-property: filter, transform, left, width;
-  transition-duration: ${props => props.transition}s;
-  animation: ${props => props.animate ? `${entrance} ${props.transition}s` : 'none'};
-`;
 
 class Panel extends Component {
   constructor(props, context) {
@@ -53,18 +20,23 @@ class Panel extends Component {
 
   render() {
     const { baseWidth, displayed, max, offscreen, ratio, scale } = this.props;
-    if (offscreen === this && max > 1) return this.renderElement({
-      animate: false,
-      brightness: 1 - displayed.length * 0.03,
-      offset: -baseWidth / 2,
-      width: baseWidth,
-    });
+    // render element offscreen
+    if (offscreen === this && max > 1)
+      return this.renderElement({
+        animate: false,
+        brightness: 1 - displayed.length * 0.03,
+        offset: -baseWidth / 2,
+        width: baseWidth
+      });
 
-    const index = displayed.length === 0 ? 0 : displayed.indexOf(this);
+    const index = displayed.indexOf(this);
+    // for performance reasons, render nothing if this panel isn't
+    // in the displayed stack
     if (index === -1) return null;
 
     const width = baseWidth * Math.pow(ratio, index);
-    const offset = index === 0 ? 0 : baseWidth * sumArray(scale.slice(0, index));
+    const offset =
+      index === 0 ? 0 : baseWidth * sumArray(scale.slice(0, index));
     const brightness = 1 - (scale.length - index - 1) * 0.03;
 
     return this.renderElement({
@@ -76,21 +48,23 @@ class Panel extends Component {
   }
 
   renderElement({ animate, brightness, offset, width }) {
-    const { children, displayed, index, render } = this.props;
+    const { bg, children, color, displayed, index, render } = this.props;
     const style = {
-      width: `${width}%`,
-      left: `${offset}%`,
+      backgroundColor: bg,
+      color,
       filter: `brightness(${brightness})`,
+      left: `${offset}%`,
+      width: `${width}%`
     };
     const passedProps = {
       isLast: index === displayed.length - 1,
       width: {
         percent: width,
-        px: width / 100 * window.innerWidth,
-      },
+        px: width / 100 * window.innerWidth
+      }
     };
     return (
-      <Element
+      <PanelDiv
         animate={animate}
         className="panel"
         data-index={index}
@@ -99,16 +73,16 @@ class Panel extends Component {
         style={style}
         transition={this.props.transition}
       >
-        <Scroll>
-          {render ? render(passedProps) : children}
-        </Scroll>
-      </Element>
+        <ScrollDiv>{render ? render(passedProps) : children}</ScrollDiv>
+      </PanelDiv>
     );
   }
 }
 
 Panel.propTypes = {
   baseWidth: PropTypes.number.isRequired,
+  bg: PropTypes.string,
+  color: PropTypes.string,
   displayed: PropTypes.array.isRequired,
   max: PropTypes.number.isRequired,
   offscreen: PropTypes.any,
@@ -116,7 +90,13 @@ Panel.propTypes = {
   onUnmount: PropTypes.func.isRequired,
   ratio: PropTypes.number.isRequired,
   transition: PropTypes.number.isRequired,
-  scale: PropTypes.array.isRequired,
+  scale: PropTypes.array.isRequired
+};
+
+Panel.defaultProps = {
+  bg: '#fff',
+  color: '#000',
+  offscreen: null
 };
 
 export default Panel;

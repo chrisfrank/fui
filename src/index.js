@@ -6,13 +6,13 @@ import ReactDOM from 'react-dom';
 import { ReactRouter, Responsive, Standalone } from './examples';
 
 const routes = {
-  "/recursive-via-react-router": ReactRouter,
-  "/recursive-via-component-state": Standalone,
-  "/responsive": Responsive,
+  '/recursive-via-react-router': ReactRouter,
+  '/recursive-via-component-state': Standalone,
+  '/responsive': Responsive
 };
 
 const Index = () => (
-  <div style={{ padding: "1em" }}>
+  <div style={{ padding: '1em' }}>
     <h1>React Panel Tree</h1>
     <h2>Examples</h2>
     <ul>
@@ -23,7 +23,7 @@ const Index = () => (
       ))}
     </ul>
   </div>
-)
+);
 
 const App = () => {
   const { pathname } = window.location;

@@ -1,14 +1,20 @@
 import React from 'react';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from 'react-router-dom';
 import { RecursiveRoutePanel } from './Router';
-import { PanelTree } from '../fui';
+import { Breakpoints, PanelTree } from '../fui';
+
+const columns = [1, 2, 2, 2, 3];
 
 const Responsive = ({ baseURL }) => (
   <BrowserRouter>
-    <PanelTree max={[1, 3, 4]}>
-      {tree => <RecursiveRoutePanel baseURL={baseURL} tree={tree} />}
-    </PanelTree>
+    <Breakpoints>
+      {breakpoint => (
+        <PanelTree max={columns[breakpoint]}>
+          {tree => <RecursiveRoutePanel baseURL={baseURL} tree={tree} />}
+        </PanelTree>
+      )}
+    </Breakpoints>
   </BrowserRouter>
 );
 
-export default Responsive;;
+export default Responsive;

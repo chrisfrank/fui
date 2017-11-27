@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-const sumArray = (array = []) => array.reduce((a, b) => (a + b), 0);
+const sumArray = (array = []) => array.reduce((a, b) => a + b, 0);
 
 const NoOverflow = styled.div`
   position: absolute;
@@ -52,7 +52,7 @@ class Tree extends Component {
       onUnmount: this.handlePanelUnmount,
       ratio,
       scale,
-      transition,
+      transition
     };
     return (
       <NoOverflow>
@@ -67,7 +67,7 @@ Tree.defaultProps = {
   max: 3,
   ratio: 1.5,
   render: null,
-  transition: 0.4,
+  transition: 0.4
 };
 
 Tree.propTypes = {
@@ -75,7 +75,7 @@ Tree.propTypes = {
   max: PropTypes.number,
   ratio: PropTypes.number,
   render: PropTypes.func,
-  transition: PropTypes.number,
+  transition: PropTypes.number
 };
 
 export default Tree;
