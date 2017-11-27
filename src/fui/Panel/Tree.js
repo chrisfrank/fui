@@ -35,7 +35,7 @@ class Tree extends Component {
   }
 
   render() {
-    const { children, max, ratio, render } = this.props;
+    const { children, max, ratio, render, transition } = this.props;
     const { panels } = this.state;
     const displayed = panels.slice(-max);
     const offscreen = panels[panels.length - max - 1];
@@ -52,6 +52,7 @@ class Tree extends Component {
       onUnmount: this.handlePanelUnmount,
       ratio,
       scale,
+      transition,
     };
     return (
       <NoOverflow>
@@ -66,11 +67,16 @@ Tree.defaultProps = {
   max: 3,
   ratio: 1.5,
   render: null,
+  transition: 0.4,
 };
 
 Tree.propTypes = {
   children: PropTypes.func,
+  max: PropTypes.number,
   render: PropTypes.func,
+  ratio: PropTypes.number,
+  render: PropTypes.func,
+  transition: PropTypes.number,
 };
 
 export default Tree;

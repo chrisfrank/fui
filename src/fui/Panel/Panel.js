@@ -32,8 +32,8 @@ const Element = styled.div`
   overflow: hidden;
   background-color: white;
   transition-property: filter, transform, left, width;
-  transition-duration: 0.333s;
-  animation: ${props => props.animate ? `${entrance} 0.333s` : 'none'};
+  transition-duration: ${props => props.transition}s;
+  animation: ${props => props.animate ? `${entrance} ${props.transition}s` : 'none'};
 `;
 
 class Panel extends Component {
@@ -76,21 +76,31 @@ class Panel extends Component {
   }
 
   renderElement({ animate, brightness, offset, width }) {
-    const { children, render } = this.props;
+    const { children, displayed, index, render } = this.props;
     const style = {
       width: `${width}%`,
       left: `${offset}%`,
       filter: `brightness(${brightness})`,
     };
+    const passedProps = {
+      isLast: index === displayed.length - 1,
+      width: {
+        percent: width,
+        px: width / 100 * window.innerWidth,
+      },
+    };
     return (
       <Element
-        onAnimationEnd={this.handleAnimationEnd}
         animate={animate}
         className="panel"
+        data-index={index}
+        data-last={index === this.props.displayed.length - 1 ? true : null}
+        onAnimationEnd={this.handleAnimationEnd}
         style={style}
+        transition={this.props.transition}
       >
         <Scroll>
-          {render ? render(width / 100 * window.innerWidth) : children}
+          {render ? render(passedProps) : children}
         </Scroll>
       </Element>
     );
@@ -105,6 +115,7 @@ Panel.propTypes = {
   onMount: PropTypes.func.isRequired,
   onUnmount: PropTypes.func.isRequired,
   ratio: PropTypes.number.isRequired,
+  transition: PropTypes.number.isRequired,
   scale: PropTypes.array.isRequired,
 };
 

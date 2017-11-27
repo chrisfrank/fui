@@ -11,3 +11,5 @@
   - Specifying props.max
   - Changing props.max via an array
   - changing color and bg
+
+- experiment with doing all transition work in react-motion

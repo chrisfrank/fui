@@ -8,7 +8,7 @@ const RecursiveRoutePanel = ({ baseURL, referrer, tree }) => (
   <div>
     <Panel
       {...tree}
-      render={width => (
+      render={panel => (
         <div style={{ padding: "1em" }}>
           <h1>Recursive Panels</h1>
           <h3>via React Router</h3>
@@ -18,7 +18,7 @@ const RecursiveRoutePanel = ({ baseURL, referrer, tree }) => (
             <p><a href="/">Back to examples</a></p>
           )}
           <p><Link to={`${baseURL}/panel`}>next panel</Link></p>
-          <p>panel width: {width}</p>
+          <p>panel width: {panel.width.px}</p>
           <p>panel url: {baseURL}</p>
           <LoremIpsum />
         </div>
