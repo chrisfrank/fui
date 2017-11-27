@@ -5,7 +5,7 @@ const updateMatches = state => ({
   matches: state.queries.map(q => q.matches)
 });
 
-class Breakpoints extends Component {
+class LayoutSize extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,13 +39,13 @@ class Breakpoints extends Component {
   }
 }
 
-Breakpoints.propTypes = {
+LayoutSize.propTypes = {
   breakpoints: PropTypes.arrayOf(PropTypes.number),
   children: PropTypes.func.isRequired
 };
 
-Breakpoints.defaultProps = {
+LayoutSize.defaultProps = {
   breakpoints: [32, 48, 64, 80]
 };
 
-export default Breakpoints;
+export default LayoutSize;
