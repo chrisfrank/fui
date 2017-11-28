@@ -3,16 +3,12 @@ import { Panel, PanelTree } from '../fui/Panel';
 import LoremIpsum from './LoremIpsum';
 
 const style = { padding: '1em' };
-const backgrounds = ['AliceBlue', 'GhostWhite', 'WhiteSmoke', 'OldLace'];
-const colors = ['#222', '#333', '#2a2a2a'];
 
 class StateExample extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
-      bg: backgrounds[Math.floor(Math.random() * backgrounds.length)],
-      color: colors[Math.floor(Math.random() * colors.length)]
+      open: false
     };
 
     this.handleToggle = event => {
@@ -26,7 +22,7 @@ class StateExample extends Component {
     const label = this.state.open ? 'Hide' : 'Show';
     return (
       <div>
-        <Panel bg={this.state.bg} color={this.state.color} {...tree}>
+        <Panel bg="AliceBlue" color="#000" {...tree}>
           <div style={style}>
             <h1>Recursive Panels</h1>
             <p>via component state</p>

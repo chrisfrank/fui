@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { entrance, PanelDiv, ScrollDiv } from './elements';
+import { PanelDiv, ScrollDiv } from './elements';
 import { sumArray } from './Tree';
 
 class Panel extends Component {
@@ -25,6 +25,7 @@ class Panel extends Component {
       return this.renderElement({
         animate: false,
         brightness: 1 - displayed.length * 0.03,
+        index: -1,
         offset: -baseWidth / 2,
         width: baseWidth
       });
@@ -42,13 +43,14 @@ class Panel extends Component {
     return this.renderElement({
       animate: this.state.canAnimate,
       brightness,
+      index,
       offset,
       width
     });
   }
 
-  renderElement({ animate, brightness, offset, width }) {
-    const { bg, children, color, displayed, index, render } = this.props;
+  renderElement({ animate, brightness, index, offset, width }) {
+    const { bg, children, color, displayed, render } = this.props;
     const style = {
       backgroundColor: bg,
       color,
@@ -57,18 +59,16 @@ class Panel extends Component {
       width: `${width}%`
     };
     const passedProps = {
+      index,
       isLast: index === displayed.length - 1,
-      width: {
-        percent: width,
-        px: width / 100 * window.innerWidth
-      }
+      width
     };
     return (
       <PanelDiv
         animate={animate}
         className="panel"
         data-index={index}
-        data-last={index === this.props.displayed.length - 1 ? true : null}
+        data-last={passedProps.isLast ? true : null}
         onAnimationEnd={this.handleAnimationEnd}
         style={style}
         transition={this.props.transition}

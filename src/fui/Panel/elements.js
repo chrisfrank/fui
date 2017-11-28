@@ -33,4 +33,4 @@ const PanelDiv = styled.div`
     props.animate ? `${entrance} ${props.transition}s` : 'none'};
 `;
 
-export { entrance, PanelDiv, ScrollDiv };
+export { PanelDiv, ScrollDiv };
