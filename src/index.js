@@ -3,9 +3,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { ReactRouter, Responsive, Standalone } from './examples';
+import { Form, Nested, ReactRouter, Responsive, Standalone } from './examples';
 
 const routes = {
+  '/form': Form,
+  '/nested': Nested,
   '/recursive-via-react-router': ReactRouter,
   '/recursive-via-component-state': Standalone,
   '/responsive': Responsive
